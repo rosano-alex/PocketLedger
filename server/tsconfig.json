@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    // The server is emitted by esbuild (see the `build` script), so tsc is
+    // used purely as a type checker here.
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "../shared/src/**/*.ts"]
+}
