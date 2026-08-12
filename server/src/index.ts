@@ -15,7 +15,12 @@ const WEB_ROOT = resolve(root, '../web/dist');
 const ledger = new Ledger(LEDGER_FILE);
 
 // Load before acepting traffic, or the first request sees an empty balance.
-await ledger.load();
+await ledger.load().catch((cause: Error) => {
+
+
+  console.error(`PocketLedger could not start: ${cause.message}`);
+  process.exit(1);
+});
 
 const app = await createApp(ledger, WEB_ROOT);
 app.listen(PORT, () => {

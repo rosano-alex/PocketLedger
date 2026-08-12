@@ -30,17 +30,32 @@ export class Ledger {
   constructor(readonly filePath: string) {}
 
   async load(): Promise<void> {
-    let parsed: unknown = [];
+    let raw: string;
 
     try {
-      parsed = JSON.parse(await readFile(this.filePath, 'utf8'));
+      raw = await readFile(this.filePath, 'utf8');
     } catch (cause) {
-      if ((cause as { code?: string }).code !== 'ENOENT') throw cause;
+      // No file, or an empty one, means an acount nobody has written to yet.
+      if ((cause as { code?: string }).code === 'ENOENT') return;
+      throw cause;
     }
 
-    const entries = Array.isArray(parsed) ? (parsed as Transaction[]) : [];
+    if (raw.trim() === '') return;
+
+    // Refuse to start on a ledger we can't read. Treating it as empty would
+    // wipe real transactions the first time anything is posted.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      throw new Error(`Ledger file is not valid JSON: ${this.filePath}`);
+    }
+    if (!Array.isArray(parsed)) {
+      throw new Error(`Ledger file is not a list of transactions: ${this.filePath}`);
+    }
 
     // Each entry carries its running balance, so loading is a lookup, not a sum.
+    const entries = parsed as Transaction[];
     this.store.setState({ entries, balanceCents: toCents(entries.at(-1)?.balanceAfter ?? 0) });
   }
 

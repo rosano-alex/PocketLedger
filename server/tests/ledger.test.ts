@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { after, describe, it } from 'node:test';
 import { Ledger } from '../src/ledger.js';
 
@@ -91,6 +91,17 @@ describe('Ledger', () => {
     const second = new Ledger(path);
     await second.load();
     assert.equal(second.summary().balance, 19.99);
+  });
+
+  it('refuses to start on a ledger it cannot read, rather than wiping it', async () => {
+    const path = await tempPath();
+    await mkdir(dirname(path), { recursive: true });
+    await writeFile(path, '{"transactions":[{"amountCents":250000}]}', 'utf8');
+
+    await assert.rejects(() => new Ledger(path).load());
+
+    // The unreadable file is left exactly as it was.
+    assert.equal(await readFile(path, 'utf8'), '{"transactions":[{"amountCents":250000}]}');
   });
 
   it('rolls the balance back when the write fails', async () => {
