@@ -1,0 +1,45 @@
+{
+  "name": "@pocketledger/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "npm run typecheck && webpack --mode production",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@codigos/typed-fsm": "github:rosano-alex/typed-fsm",
+    "@gluestack-style/react": "^1.0.57",
+    "@gluestack-ui/config": "^1.1.20",
+    "@gluestack-ui/themed": "^1.1.73",
+    "@pocketledger/shared": "*",
+    "@tanstack/react-query": "^5.64.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-native-svg": "^15.15.5",
+    "react-native-web": "^0.21.2",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "babel-jest": "^30.4.1",
+    "babel-loader": "^10.1.1",
+    "css-loader": "^7.1.4",
+    "html-webpack-plugin": "^5.6.8",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "style-loader": "^4.0.0",
+    "typescript": "^5.7.3",
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2",
+    "webpack-dev-server": "^5.2.6"
+  }
+}
