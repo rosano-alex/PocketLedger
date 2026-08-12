@@ -41,15 +41,19 @@ export async function createApp(ledger: Ledger, webRoot?: string): Promise<Expre
   }
 
   app.use(((err, _req, res, _next) => {
-    // An unparseable body never reaches a route; answer with the usual envelope.
-    const malformed = err instanceof SyntaxError && 'body' in err;
-    if (!malformed) console.error('[http]', err);
+    // A body express couldn't read never reaches a route. Those carry a 4xx
+    // status and are the caller's problem, so they answer like any refusal.
+    const status = (err as { status?: number }).status ?? 500;
+    if (status >= 500) {
+      console.error('[http]', err);
+      send(res, 500, { ok: false, error: { code: 'STORAGE_FAILURE', message: 'Something went wrong.' } });
+      return;
+    }
 
-    send(res, malformed ? 200 : 500, {
+    const tooLarge = (err as { type?: string }).type === 'entity.too.large';
+    send(res, 200, {
       ok: false,
-      error: malformed
-        ? { code: 'INVALID_INPUT', message: 'Invalid JSON.' }
-        : { code: 'STORAGE_FAILURE', message: 'Something went wrong.' },
+      error: { code: 'INVALID_INPUT', message: tooLarge ? 'Request is too large.' : 'Invalid JSON.' },
     });
   }) as express.ErrorRequestHandler);
 
