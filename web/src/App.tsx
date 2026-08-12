@@ -77,12 +77,12 @@ function Container({ children, paddingVertical }: { children: React.ReactNode; p
 
 function NoticeBanner({ notice }: { notice: Notice | null }) {
   if (!notice) return null;
-  const colour = notice.tone === 'refused' ? '$debit' : '$warn';
+  const colour = notice.tone === 'refused' ? '$danger' : '$warn';
 
   return (
     <Box
       role="alert"
-      bg={notice.tone === 'refused' ? '$debitWash' : '$warnWash'}
+      bg={notice.tone === 'refused' ? '$dangerWash' : '$warnWash'}
       borderWidth={1}
       borderColor={colour}
       borderRadius={4}
