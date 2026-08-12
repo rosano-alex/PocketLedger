@@ -17,7 +17,7 @@ export function RecentTransactions({ transactions, error }: RecentTransactionsPr
 
     return (
       <Panel title="Last 5 transactions">
-        <Text role="status" fontFamily="$body" color="$debit" sx={{ fontSize: 14 }}>
+        <Text role="status" fontFamily="$body" color="$danger" sx={{ fontSize: 14 }}>
           {error.message}
         </Text>
       </Panel>
@@ -46,7 +46,9 @@ export function RecentTransactions({ transactions, error }: RecentTransactionsPr
             </Cell>
 
             <Cell flex={28}>{transaction.description}</Cell>
-            <Cell flex={13}>{transaction.type === 'credit' ? 'Credit' : 'Debit'}</Cell>
+            <Cell flex={13} color={transaction.type === 'credit' ? '$credit' : '$debit'}>
+              {transaction.type === 'credit' ? 'Credit' : 'Debit'}
+            </Cell>
             {
               // Unsigned; the Type column carries the direction.
             }
@@ -86,12 +88,14 @@ function Cell({
   align = 'left',
   mono = false,
   muted = false,
+  color,
 }: {
   children: string;
   flex: number;
   align?: 'left' | 'right';
   mono?: boolean;
   muted?: boolean;
+  color?: string;
 }) {
 
 
@@ -101,7 +105,7 @@ function Cell({
     <Box flex={flex} minWidth={0} role="cell">
       <Text
         fontFamily={mono ? 'ui-monospace, SFMono-Regular, Menlo, monospace' : '$body'}
-        color={muted ? '$textMuted' : '$text'}
+        color={color ?? (muted ? '$textMuted' : '$text')}
         textAlign={align}
         numberOfLines={1}
         dataSet={{ figure: mono }}
