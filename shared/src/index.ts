@@ -16,7 +16,6 @@ export interface TransactionInput {
 }
 
 
-
 export interface Account {
   balance: number;
   transactionCount: number;
