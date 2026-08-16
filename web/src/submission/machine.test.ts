@@ -1,4 +1,4 @@
-import { createSubmissionMachine, type Notice, type SubmissionEvent } from './submissionMachine';
+import { createSubmissionMachine, type Notice, type SubmissionEvent } from './index';
 
 function harness() {
   const notices: (Notice | null)[] = [];

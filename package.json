@@ -10,7 +10,7 @@
     "web"
   ],
   "scripts": {
-    "dev": "concurrently -n api,web -c green,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev": "concurrently -n api,web -c green,magenta --kill-others-on-fail \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm run dev --workspace server",
     "dev:web": "npm run dev --workspace web",
     "build": "npm run build --workspace server && npm run build --workspace web",
@@ -19,7 +19,9 @@
     "test": "npm run test --workspace server && npm run test --workspace web"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.2.4",
+    "sleep-ms": "^2.0.1",
+    "webpack-open-browser-plugin": "^1.0.7"
   },
   "engines": {
     "node": ">=20.19"

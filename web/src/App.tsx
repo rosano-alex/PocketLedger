@@ -1,97 +1,48 @@
-import { Box, HStack, Heading, Text, VStack } from '@gluestack-ui/themed';
+import { Box, HStack, VStack } from '@gluestack-ui/themed';
 import { useAccount, useRecentTransactions } from './api';
-import { Panel } from './components/Panel';
-
-import { RecentTransactions } from './components/RecentTransactions';
-
-
-import { TransactionForm } from './components/TransactionForm';
-import { money } from './format';
-import { useLedgerStore } from './store';
-import type { Notice } from './submissionMachine';
-
-
-
+import {
+  BalancePanel,
+  Container,
+  Footer,
+  Masthead,
+  NoticeDialog,
+  RecentTransactions,
+  TransactionForm,
+} from './components';
 
 export default function App() {
-  //
   const account = useAccount();
   const recent = useRecentTransactions();
-  const notice = useLedgerStore((state) => state.notice);
 
   return (
-    //
     <Box minHeight="100vh">
-      <Box bg="#16181c" borderBottomWidth={1} borderBottomColor="#2a2e34">
-        <Container paddingVertical={16}>
-          <Heading fontFamily='system-ui, -apple-system, "Segoe UI", sans-serif' color="$text" fontWeight="600" sx={{ fontSize: 30 }}>
-            PocketLedger
-          </Heading>
-        </Container>
-      </Box>
+      <Masthead />
 
-      <Container paddingVertical="$6">
+      {/*
+        Two columns from the tablet break up: the form on the left, and the
+        balance with the list it explains on the right. Below that the form
+        stacks on top — it's what you came to do.
+      */}
+      <Container paddingVertical={28}>
         <HStack
           space="lg"
           alignItems="flex-start"
-          sx={{ '@base': { flexDirection: 'column' }, '@lg': { flexDirection: 'row' } }}
+          sx={{ '@base': { flexDirection: 'column' }, '@md': { flexDirection: 'row' } }}
         >
-          <VStack space="lg" flex={1} width="100%">
-            <Panel title="Balance">
-              <Text
-                fontFamily="$mono"
-                color="$text"
-                dataSet={{ figure: true }}
-                sx={{ fontSize: 32, lineHeight: 40 }}
-              >
-                {money(account.data?.balance ?? 0)}
-              </Text>
-            </Panel>
-
-            <NoticeBanner notice={notice} />
-            <RecentTransactions transactions={recent.data?.transactions} error={recent.error} />
-          </VStack>
-
-          <Box width="100%" sx={{ '@lg': { width: 340, flexShrink: 0 } }}>
+          <Box width="100%" sx={{ '@md': { width: 330, flexShrink: 0 } }}>
             <TransactionForm />
           </Box>
+
+          <VStack space="lg" flex={1} width="100%">
+            <BalancePanel balance={account.data?.balance ?? 0} />
+            <RecentTransactions transactions={recent.data?.transactions} error={recent.error} />
+          </VStack>
         </HStack>
+
+        <Footer />
       </Container>
-    </Box>
-  );
-}
 
-function Container({ children, paddingVertical }: { children: React.ReactNode; paddingVertical: string | number }) {
-  return (
-    <Box
-      width="100%"
-      maxWidth={1000}
-      marginHorizontal="auto"
-      paddingHorizontal={20}
-      paddingVertical={paddingVertical}
-    >
-      {children}
-    </Box>
-  );
-}
-
-function NoticeBanner({ notice }: { notice: Notice | null }) {
-  if (!notice) return null;
-  const colour = notice.tone === 'refused' ? '$danger' : '$warn';
-
-  return (
-    <Box
-      role="alert"
-      bg={notice.tone === 'refused' ? '$dangerWash' : '$warnWash'}
-      borderWidth={1}
-      borderColor={colour}
-      borderRadius={4}
-      paddingHorizontal="$4"
-      paddingVertical="$3"
-    >
-      <Text fontFamily="$body" color={colour} sx={{ fontSize: 13, lineHeight: 20 }}>
-        {notice.message}
-      </Text>
+      <NoticeDialog />
     </Box>
   );
 }

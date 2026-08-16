@@ -29,10 +29,13 @@ npm test
 ## Layout
 
 ```
-shared/    the types both sides import
-server/    index · app · ledger · postingMachine
-web/       React UI
+shared/    the types both sides import, one concern per file
+server/    index · app · ledger · posting/
+web/       React UI — api/ · format/ · store/ · submission/ · components/
 ```
+
+Every folder is a set of small single-purpose files behind an `index.ts`
+barrel, so importers name the folder and never a file inside it.
 
 ## API
 
@@ -63,7 +66,7 @@ The server sets the timestamp, so a request carries only `amount`, `type` and `d
 
 **Money is never added as a float.** Amounts become integer cents for every calcuation. Ten `0.10` debits against `1.00` land exactly on `0`.
 
-**Posting is a state machine** (`server/src/postingMachine.ts`): `idle → validating → checkingFunds → persisting → settled`. `persisting` is only reachable through `checkingFunds`, so nothing can be written that overdraws the account. The UI has its own machine for the form, which is what makes double-submit impossible.
+**Posting is a state machine** (`server/src/posting/machine.ts`): `idle → validating → checkingFunds → persisting → settled`. `persisting` is only reachable through `checkingFunds`, so nothing can be written that overdraws the account. The UI has its own machine for the form, which is what makes double-submit impossible.
 
 **zustand holds state on both sides.** On the server it's the in-memory account; on the client it's the form draft and submission status. Balance and history live in TanStack Query, so there's one copy of server data.
 

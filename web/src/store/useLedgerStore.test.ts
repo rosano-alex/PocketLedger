@@ -1,9 +1,9 @@
-import { useLedgerStore } from './store';
+import { emptyDraft, useLedgerStore } from './index';
 
 describe('ledger store', () => {
   beforeEach(() => {
     useLedgerStore.getState().dispatch({ type: 'EDIT' });
-    useLedgerStore.setState({ draft: { amount: '', type: 'credit', description: '' }, notice: null });
+    useLedgerStore.setState({ draft: emptyDraft(), notice: null });
   });
 
   it('mirrors the machine state into `status`', () => {

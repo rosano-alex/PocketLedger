@@ -1,38 +1,21 @@
-import { createFSM, type Instance } from '@codigos/typed-fsm';
-import type { LedgerError } from '@pocketledger/shared';
+import { createFSM } from '@codigos/typed-fsm';
+import type {
+  SubmissionDeps,
+  SubmissionEvent,
+  SubmissionInstance,
+  SubmissionMessage,
+  SubmissionState,
+} from './types';
 
-// A submit can succeed, be refused, or fail, and flags for that allow
-// imposible combinations. Double-submit is structural here: `SUBMIT` isn't
-// handled while one is in flight.
-export type SubmissionState = 'idle' | 'submitting' | 'accepted' | 'refused' | 'failed';
-
-export type SubmissionEvent =
-  | { type: 'SUBMIT' }
-  | { type: 'ACCEPTED' }
-  | { type: 'REFUSED'; error: LedgerError }
-  | { type: 'FAILED'; message: string }
-  | { type: 'EDIT' };
-
-// Only failures are shown; a success speaks through the updated balnace.
-export interface Notice {
-  tone: 'refused' | 'failed';
-  message: string;
-}
-
-interface SubmissionDeps {
-  onAccepted: () => void;
-  onNotice: (notice: Notice | null) => void;
-  onTransition?: (from: SubmissionState, to: SubmissionState) => void;
-}
-
-type SubmissionInstance = Instance<SubmissionState, SubmissionEvent, boolean>;
-
+// handlers close over `deps` so they live here with the machine - pulling them
+// out into their own file just buys indirection
 export function createSubmissionMachine(deps: SubmissionDeps): SubmissionInstance {
   return createFSM<SubmissionState, SubmissionEvent, boolean>({
     initialState: 'idle',
     ...(deps.onTransition ? { onChange: deps.onTransition } : {}),
     states: {
       idle: { onMessage: handleIdle },
+
       submitting: {
         onMessage(message, self) {
           const event = message.payload;
@@ -59,16 +42,14 @@ export function createSubmissionMachine(deps: SubmissionDeps): SubmissionInstanc
           }
         },
       },
+
       accepted: { onMessage: settled('accepted') },
       refused: { onMessage: settled('refused') },
       failed: { onMessage: settled('failed') },
     },
   });
 
-  function handleIdle(
-    message: { payload: SubmissionEvent; reply: (ack: boolean) => void },
-    self: SubmissionInstance,
-  ) {
+  function handleIdle(message: SubmissionMessage, self: SubmissionInstance) {
     if (message.payload.type !== 'SUBMIT') return message.reply(false);
 
     deps.onNotice(null);
@@ -77,10 +58,7 @@ export function createSubmissionMachine(deps: SubmissionDeps): SubmissionInstanc
   }
 
   function settled(state: SubmissionState) {
-    return (
-      message: { payload: SubmissionEvent; reply: (ack: boolean) => void },
-      self: SubmissionInstance,
-    ) => {
+    return (message: SubmissionMessage, self: SubmissionInstance) => {
       if (message.payload.type === 'SUBMIT') return handleIdle(message, self);
 
       // Nothing to clear after a success, so only failures reset on edit.

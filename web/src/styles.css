@@ -4,23 +4,140 @@
 
 html,
 body,
-
 #root {
   height: 100%;
 }
 
-
+/* The React tree paints above the grain layer below. */
+#root {
+  position: relative;
+  z-index: 1;
+}
 
 body {
   margin: 0;
   color-scheme: dark;
 
-  background-color: #0f1113;
-  color: #e8eaed;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Three washes over a navy fall: palette blue breaking behind the masthead,
+     a cold sky highlight top-right, and a coral bloom low on the right that
+     keeps the bottom of a long page from going flat. Fixed, so a long
+     transaction list scrolls past the light instead of dragging it along. */
+  background-color: #212c3d;
+  background-image:
+    radial-gradient(1100px 520px at 6% -12%, rgba(77, 112, 158, 0.95), transparent 62%),
+    radial-gradient(720px 420px at 97% 2%, rgba(152, 193, 217, 0.24), transparent 60%),
+    radial-gradient(900px 700px at 84% 114%, rgba(238, 108, 77, 0.22), transparent 62%),
+    linear-gradient(180deg, #3c5480 0%, #2e3c54 46%, #212c3d 100%);
+  background-attachment: fixed;
+
+  color: #e0fbfc;
+  font-family: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* A film of grain over the page ground, under the panels — gradients this
+   wide band badly on an 8-bit screen, and the noise breaks the bands up. The
+   panels are frosted rather than opaque, so a little of it shows through
+   them too. Inline SVG, so it costs no request. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 [data-figure] {
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Panels ────────────────────────────────────────────────────────────────
+   Frosted navy, lit along the top edge. The blur is what makes the page
+   light behind them read as depth rather than as a flat backdrop. */
+[data-panel] {
+  position: relative;
+  background: linear-gradient(180deg, rgba(62, 80, 108, 0.9), rgba(48, 62, 84, 0.78));
+  border: 1px solid rgba(152, 193, 217, 0.26);
+  border-radius: 16px;
+  box-shadow:
+    0 28px 60px -38px rgba(6, 10, 18, 0.8),
+    inset 0 1px 0 rgba(224, 251, 252, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* A hairline that catches the light in the middle and fades at both corners,
+   the way a bevel would. */
+[data-panel]::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(224, 251, 252, 0.48), transparent);
+}
+
+[data-masthead] {
+  border-bottom: 1px solid rgba(152, 193, 217, 0.2);
+}
+
+/* ── Table rows ───────────────────────────────────────────────────────────
+   The separators live here rather than on the row so the last one can be
+   dropped — a rule under the final row would fence the list in. */
+[data-row='body'] {
+  border-bottom: 1px solid rgba(152, 193, 217, 0.16);
+  transition: background-color 160ms var(--fade-ease);
+}
+
+[data-row='body']:last-child {
+  border-bottom-color: transparent;
+}
+
+[data-row='body']:hover {
+  background-color: rgba(152, 193, 217, 0.11);
+}
+
+[data-row='head'] {
+  border-bottom: 1px solid rgba(152, 193, 217, 0.26);
+}
+
+/* ── The one button ───────────────────────────────────────────────────────
+   Coral is the only warm thing on the page, so the button glows a little of
+   it onto the surface underneath and lifts a pixel when reached for. */
+[data-cta] {
+  box-shadow: 0 12px 26px -16px rgba(238, 108, 77, 0.95);
+  transition:
+    transform 160ms var(--fade-ease),
+    box-shadow 160ms var(--fade-ease);
+}
+
+[data-cta]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px -16px rgba(238, 108, 77, 1);
+}
+
+[data-cta]:active {
+  transform: translateY(0);
+}
+
+[data-cta][disabled],
+[data-cta][aria-disabled='true'] {
+  box-shadow: none;
+  transform: none;
+}
+
+/* react-native-web clears the UA outline on inputs, which takes the keyboard
+   ring with it. Put a coral one back, on focus-visible only so a click
+   doesn't light it up. */
+input:focus-visible,
+[data-cta]:focus-visible {
+  outline: 2px solid rgba(238, 108, 77, 0.85) !important;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(238, 108, 77, 0.32);
+  color: #e0fbfc;
 }

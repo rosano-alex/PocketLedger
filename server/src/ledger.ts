@@ -10,7 +10,7 @@ import {
   toCents,
   type Outcome,
   type ValidTransaction,
-} from './postingMachine.js';
+} from './posting/index.js';
 
 const RECENT_LIMIT = 5;
 

@@ -1,0 +1,77 @@
+:root {
+  /* A strong ease-out: most of the distance is covered immediately, then it
+     settles. Reads as confident rather than floaty, which a plain `ease-out`
+     keyword (0, 0, 0.58, 1) does not quite manage. */
+  --fade-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fade-duration: 460ms;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* `both` matters: without the backwards half, an element would sit fully
+   visible through its delay and then jump. */
+[data-fade] {
+  animation: fade-in var(--fade-duration) var(--fade-ease) both;
+}
+
+/* The stagger ladder. Panels are 70ms apart so each is distinctly its own
+   beat; table rows are 45ms apart so they read as one sweep, not a queue. */
+[data-fade-step='0'] {
+  animation-delay: 0ms;
+}
+
+[data-fade-step='1'] {
+  animation-delay: 70ms;
+}
+
+[data-fade-step='2'] {
+  animation-delay: 140ms;
+}
+
+[data-fade-step='3'] {
+  animation-delay: 210ms;
+}
+
+[data-fade-step='4'] {
+  animation-delay: 280ms;
+}
+
+[data-fade-step='5'] {
+  animation-delay: 325ms;
+}
+
+[data-fade-step='6'] {
+  animation-delay: 370ms;
+}
+
+[data-fade-step='7'] {
+  animation-delay: 415ms;
+}
+
+[data-fade-step='8'] {
+  animation-delay: 460ms;
+}
+
+[data-fade-step='9'] {
+  animation-delay: 505ms;
+}
+
+[data-fade-step='10'] {
+  animation-delay: 550ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fade] {
+    animation: none;
+  }
+}
