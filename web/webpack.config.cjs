@@ -58,6 +58,8 @@ module.exports = (_env, argv = {}) => {
         // typed-fsm imports without file extensions.
         { test: extension('.js', '.mjs'), resolve: { fullySpecified: false } },
         { test: extension('.css'), use: ['style-loader', 'css-loader'] },
+        // Fonts referenced from CSS. asset/resource, not asset — see fonts.css.
+        { test: extension('.otf', '.ttf', '.woff', '.woff2'), type: 'asset/resource' },
       ],
     },
 
@@ -69,6 +71,8 @@ module.exports = (_env, argv = {}) => {
 
     devServer: {
       port: 5273,
+      // Opens once the server is actually listening, so there is no startup race.
+      open: true,
       // One origin in dev; in production Express serves the bundle itself.
       historyApiFallback: true,
       proxy: [{ context: ['/api'], target: API_TARGET, changeOrigin: true }],

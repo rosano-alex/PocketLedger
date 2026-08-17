@@ -1,34 +1,10 @@
-import type { TransactionType } from '@pocketledger/shared';
 import { create } from 'zustand';
-import {
-  createSubmissionMachine,
-  type Notice,
-
-
-  type SubmissionEvent,
-  type SubmissionState,
-} from './submissionMachine';
-
-interface Draft {
-
-  // Kept as text, so a half-typed "12." isn't mangled into a number.
-  amount: string;
-  type: TransactionType;
-  description: string;
-}
-
-interface LedgerUiState {
-  draft: Draft;
-  status: SubmissionState;
-  notice: Notice | null;
-
-  setField: <K extends keyof Draft>(field: K, value: Draft[K]) => void;
-  dispatch: (event: SubmissionEvent) => boolean;
-}
-
-const emptyDraft = (): Draft => ({ amount: '', type: 'credit', description: '' });
+import { createSubmissionMachine } from '../submission';
+import { emptyDraft } from './draft';
+import type { LedgerUiState } from './types';
 
 export const useLedgerStore = create<LedgerUiState>()((set, get) => {
+
   const machine = createSubmissionMachine({
     onTransition: (_from, to) => set({ status: to }),
     onNotice: (notice) => set({ notice }),
@@ -47,6 +23,7 @@ export const useLedgerStore = create<LedgerUiState>()((set, get) => {
       get().dispatch({ type: 'EDIT' });
     },
 
+    // returns whether the machine actually handled it
     dispatch: (event) => {
       let handled = false;
       machine.send({ payload: event, reply: (ack) => void (handled = ack) });

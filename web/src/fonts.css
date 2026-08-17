@@ -1,0 +1,13 @@
+/* The masthead face. One weight, one style — declared as `normal` so a plain
+   400 request matches it exactly and the browser has no reason to synthesise
+   a bolder cut, which smears the brush edges.
+
+   `color` and a quoted `font-style` were in here before; neither is a
+   @font-face descriptor, so both were dropped by the parser. */
+@font-face {
+  font-family: 'Ink Brush Arabic';
+  src: url('fonts/InkBrushArabic_DEMO-Textured.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

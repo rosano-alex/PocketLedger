@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { createPostingMachine, runPosting, toCents, validate } from '../src/postingMachine.js';
+import { createPostingMachine, runPosting, toCents, validate } from '../src/posting/index.js';
 
 function machineWith(balanceCents: number, options: { failCommit?: boolean } = {}) {
   const transitions: string[] = [];

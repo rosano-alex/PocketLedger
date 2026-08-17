@@ -1,38 +1,30 @@
 # PocketLedger
 
-A single-account accounting system: an Express + TypeScript API, a React + TypeScript UI, and transactoins stored as JSON on disk.
+PocketLedger is a simple, single-account ledger built to make money tracking dependable and easy. It includes an Express + TypeScript API, a React + TypeScript web app, and JSON-based transaction storage.
 
-One rule runs through the whole thing: **no transaction may take the balence below zero.** A debit that would overdraw is refused, and the reason is shown in the UI.
+One rule: **the balance can never fall below zero.** If a debit would overdraw the account, PocketLedger declines it.
 
-## Run it
+## Easy developer setup
+
+To run the API and web app side by side in dev:
 
 ```bash
 npm install
-```
-
-```bash
 npm run dev
 ```
 
-API on <http://localhost:4400>, UI on <http://localhost:5273>.
+The API runs at <http://localhost:4400> and the web app at <http://localhost:5273>.
 
-To run it as one process on one port, with Express serving the built UI:
-
-```bash
-npm run build && npm start
 ```
+To run the test suite:
 
 ```bash
 npm test
 ```
 
-## Layout
 
-```
-shared/    the types both sides import
-server/    index · app · ledger · postingMachine
-web/       React UI
-```
+Each folder contains small, focused modules exported through an index.ts barrel file. This lets imports target the folder instead of individual files, a pattern inspired by Angular and React library development.
+
 
 ## API
 
@@ -42,43 +34,47 @@ web/       React UI
 | `GET` | `/api/transactions` | The last 5 transactions, newest first |
 | `POST` | `/api/transactions` | Write one transaction |
 
-Every response uses the same envelop:
+Every response uses the same pattern:
 
 ```jsonc
 { "ok": true,  "data": { } }
 { "ok": false, "error": { "code": "INSUFFICIENT_FUNDS", "message": "Not enough funds. Balance is $3789.31." } }
 ```
 
-Only two status codes are used. **200** means the request was handled: the body says whether the ledger accepted it or refused it, since a refusal is a real answer rather than a failure. **500** means the server itself broke.
+Only two status codes are used. 
 
-```bash
-curl -X POST http://localhost:4400/api/transactions \
-  -H 'Content-Type: application/json' \
-  -d '{"amount":2500,"type":"credit","description":"Opening deposit"}'
-```
 
-The server sets the timestamp, so a request carries only `amount`, `type` and `description`.
+| CODE |Meaning |
+| --- | --- | --- |
+| 200 | Reequest is sucessful|
+| 500 | Serverside error |
 
-## How it works
+The server sets the timestamp, so a request carries only `amount`, `type`, and `description`.
 
-**Money is never added as a float.** Amounts become integer cents for every calcuation. Ten `0.10` debits against `1.00` land exactly on `0`.
 
-**Posting is a state machine** (`server/src/postingMachine.ts`): `idle → validating → checkingFunds → persisting → settled`. `persisting` is only reachable through `checkingFunds`, so nothing can be written that overdraws the account. The UI has its own machine for the form, which is what makes double-submit impossible.
 
-**zustand holds state on both sides.** On the server it's the in-memory account; on the client it's the form draft and submission status. Balance and history live in TanStack Query, so there's one copy of server data.
 
-**Writes are safe.** All file I/O is async. Each write goes to a temp file and is renamed over the real one, so a crash can't truncate the ledger. Postings are serialised, or two debits could read the same balance and jointly overdraw. If a write fails, the in-memory balance rolls back.
+#### State Management
 
-**A ledger it can't read stops the server.** Only a missing file means "new account"; otherwise it refuses to start rather than overwrite real transactions.
+Posting follows a **state machine** in `server/src/posting/machine.ts`:
 
-## Storage
+`idle → validating → checkingFunds → persisting → settled`
 
-`server/data/transactions.json`, created on first write and gitignroed. Override with `LEDGER_FILE`.
+Because `persisting` is only reached after the funds check passes, overdrafts cannot be written to disk. The form uses a separate state machine to prevent duplicate submissions.
 
-## Notes
+State machines are managed with [typed-fsm](https://github.com/rosano-alex/typed-fsm).
 
-gluestack-ui is a React Native library; on the web it runs through react-native-web, which is why webpack aliases `react-native` and `.npmrc` sets `legacy-peer-deps`.
+**Zustand** manages application state on both the client and server:
 
-`@codigos/typed-fsm` is installed from GitHub. Its published build uses extension-less imports that bundlers accept but Node does not, so the server is bundled with esbuild.
+- **Server:** In-memory account state
+- **Client:** Form drafts and submission state
 
-Babel and esbuild strip types without checking them. `npm run typecheck` is what actually checks, and it runs as part of `npm run build`.
+**TanStack Query** manages server data, including the balance and transaction history, and provides a single source of truth for fetched data.
+
+### Additional Highlights
+**Writes are safe.** `I/O` is asynchronous. Each update is written to a temp file, then renamed over the ledger, so a crash cannot ruin the data. Postings are serialized to prevent concurrent debits from reading the same balance and jointly overdrawing the account. If a write fails, the in-memory balance is rolled back.
+
+**An unreadable ledger stops the server.** A missing file is treated as a new account; any other read error prevents startup, protecting existing transaction data from being overwritten.
+
+Transactions live in `server/data/transactions.json`. The file is created on the first write and ignored by Git. Set `LEDGER_FILE` to use a different location.
+
