@@ -77,4 +77,16 @@ State machines are managed with [typed-fsm](https://github.com/rosano-alex/typed
 **An unreadable ledger stops the server.** A missing file is treated as a new account; any other read error prevents startup, protecting existing transaction data from being overwritten.
 
 Transactions live in `server/data/transactions.json`. The file is created on the first write and ignored by Git. Set `LEDGER_FILE` to use a different location.
+<br><br><br>
+### Front end data flow:
+![Front Ent arch](img/web.png)
+
+<br><br>
+### Back end data flow:
+![Back Ent arch](img/server.png)
+
+
+
+
+
 
