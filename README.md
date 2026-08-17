@@ -46,9 +46,10 @@ Only two status codes are used.
 
 | CODE | Meaning |
 | --- | --- | --- |
-| 200 | Reequest is sucessful |
-| 500 | Serverside error |
+| `200` | `Reequest is sucessful` |
+| `500` | `Serverside error` |
 
+<br>
 The server sets the timestamp, so a request carries only `amount`, `type`, and `description`.
 
 
