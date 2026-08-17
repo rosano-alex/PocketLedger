@@ -41,9 +41,7 @@ Every response uses the same pattern:
 { "ok": false, "error": { "code": "INSUFFICIENT_FUNDS", "message": "Not enough funds. Balance is $3789.31." } }
 ```
 
-Only two status codes are used. 
-
-## CODEs
+#### Only two status codes are used. 
 
 | CODE | Meaning |
 | --- | --- |
