@@ -1,41 +1,29 @@
 # PocketLedger
 
-A single-account accounting system: an Express + TypeScript API, a React + TypeScript UI, and transactoins stored as JSON on disk.
+PocketLedger is a small, single-account ledger with an Express and TypeScript API, a React and TypeScript interface, and JSON-backed transaction storage.
 
-One rule runs through the whole thing: **no transaction may take the balence below zero.** A debit that would overdraw is refused, and the reason is shown in the UI.
+One rule guides the whole app: **the balance can never fall below zero.** If a debit would overdraw the account, PocketLedger declines it and clearly explains why in the interface.
 
-## Run it
+## Quick Start
+
+To run the API and web app side by side in development do:
 
 ```bash
 npm install
-```
-
-```bash
 npm run dev
 ```
 
-API on <http://localhost:4400>, UI on <http://localhost:5273>.
+The API runs at <http://localhost:4400> and the web app at <http://localhost:5273>.
 
-To run it as one process on one port, with Express serving the built UI:
-
-```bash
-npm run build && npm start
 ```
+
+To run the test suite:
 
 ```bash
 npm test
 ```
 
-## Layout
-
-```
-shared/    the types both sides import, one concern per file
-server/    index · app · ledger · posting/
-web/       React UI — api/ · format/ · store/ · submission/ · components/
-```
-
-Every folder is a set of small single-purpose files behind an `index.ts`
-barrel, so importers name the folder and never a file inside it.
+Each folder contains small, focused modules exposed through an `index.ts` barrel, so imports refer to the folder rather than individual files.
 
 ## API
 
@@ -45,14 +33,14 @@ barrel, so importers name the folder and never a file inside it.
 | `GET` | `/api/transactions` | The last 5 transactions, newest first |
 | `POST` | `/api/transactions` | Write one transaction |
 
-Every response uses the same envelop:
+Every response uses the same envelope:
 
 ```jsonc
 { "ok": true,  "data": { } }
 { "ok": false, "error": { "code": "INSUFFICIENT_FUNDS", "message": "Not enough funds. Balance is $3789.31." } }
 ```
 
-Only two status codes are used. **200** means the request was handled: the body says whether the ledger accepted it or refused it, since a refusal is a real answer rather than a failure. **500** means the server itself broke.
+Only two status codes are used. A **200** means the request was handled; the response body tells you whether the ledger accepted or declined it. A declined posting is an expected result, not a server error. A **500** means something went wrong on the server.
 
 ```bash
 curl -X POST http://localhost:4400/api/transactions \
@@ -60,28 +48,21 @@ curl -X POST http://localhost:4400/api/transactions \
   -d '{"amount":2500,"type":"credit","description":"Opening deposit"}'
 ```
 
-The server sets the timestamp, so a request carries only `amount`, `type` and `description`.
+The server sets the timestamp, so a request carries only `amount`, `type`, and `description`.
 
-## How it works
+## How It Works
 
-**Money is never added as a float.** Amounts become integer cents for every calcuation. Ten `0.10` debits against `1.00` land exactly on `0`.
+**Money is stored as integer cents.** All calculations use cents rather than floating-point numbers, so ten $0.10 debits from $1.00 land exactly at $0.00.
 
-**Posting is a state machine** (`server/src/posting/machine.ts`): `idle → validating → checkingFunds → persisting → settled`. `persisting` is only reachable through `checkingFunds`, so nothing can be written that overdraws the account. The UI has its own machine for the form, which is what makes double-submit impossible.
+**Posting follows a state machine** (`server/src/posting/machine.ts`): `idle → validating → checkingFunds → persisting → settled`. Because `persisting` is only reachable after the funds check, an overdraft can never be written to disk. The form uses its own state machine to prevent double submissions. Both use [typed-fsm](https://github.com/rosano-alex/typed-fsm).
 
-**zustand holds state on both sides.** On the server it's the in-memory account; on the client it's the form draft and submission status. Balance and history live in TanStack Query, so there's one copy of server data.
+**Zustand manages local state on both sides.** The server uses it for the in-memory account; the client uses it for the form draft and submission state. TanStack Query owns the balance and transaction history, keeping one source of truth for server data.
 
-**Writes are safe.** All file I/O is async. Each write goes to a temp file and is renamed over the real one, so a crash can't truncate the ledger. Postings are serialised, or two debits could read the same balance and jointly overdraw. If a write fails, the in-memory balance rolls back.
+**Writes are designed to be safe.** File I/O is asynchronous. Each update is written to a temporary file, then renamed over the ledger, so a crash cannot truncate the data. Postings are serialized to prevent concurrent debits from reading the same balance and jointly overdrawing the account. If a write fails, the in-memory balance is rolled back.
 
-**A ledger it can't read stops the server.** Only a missing file means "new account"; otherwise it refuses to start rather than overwrite real transactions.
+**An unreadable ledger stops the server.** A missing file is treated as a new account; any other read error prevents startup, protecting existing transaction data from being overwritten.
 
 ## Storage
 
-`server/data/transactions.json`, created on first write and gitignroed. Override with `LEDGER_FILE`.
+Transactions live in `server/data/transactions.json`. The file is created on the first write and ignored by Git. Set `LEDGER_FILE` to use a different location.
 
-## Notes
-
-gluestack-ui is a React Native library; on the web it runs through react-native-web, which is why webpack aliases `react-native` and `.npmrc` sets `legacy-peer-deps`.
-
-`@codigos/typed-fsm` is installed from GitHub. Its published build uses extension-less imports that bundlers accept but Node does not, so the server is bundled with esbuild.
-
-Babel and esbuild strip types without checking them. `npm run typecheck` is what actually checks, and it runs as part of `npm run build`.
