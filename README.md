@@ -43,9 +43,10 @@ Every response uses the same pattern:
 
 Only two status codes are used. 
 
+## CODEs
 
 | CODE | Meaning |
-| --- | --- | --- |
+| --- | --- |
 | `200` | `Reequest is sucessful` |
 | `500` | `Serverside error` |
 
