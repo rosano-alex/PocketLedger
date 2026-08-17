@@ -15,7 +15,7 @@ npm run dev
 
 The API runs at <http://localhost:4400> and the web app at <http://localhost:5273>.
 
-```
+
 To run the test suite:
 
 ```bash
@@ -23,7 +23,7 @@ npm test
 ```
 
 
-Each folder contains small, focused modules exported through an index.ts barrel file. This lets imports target the folder instead of individual files, a pattern inspired by Angular and React library development.
+Each folder contains small, focused modules exported through an index.ts barrel file. This lets imports target the folder instead of individual files, a pattern inspired by **Angular** and **React library development.**
 
 
 ## API
@@ -44,9 +44,9 @@ Every response uses the same pattern:
 Only two status codes are used. 
 
 
-| CODE |Meaning |
+| CODE | Meaning |
 | --- | --- | --- |
-| 200 | Reequest is sucessful|
+| 200 | Reequest is sucessful |
 | 500 | Serverside error |
 
 The server sets the timestamp, so a request carries only `amount`, `type`, and `description`.
