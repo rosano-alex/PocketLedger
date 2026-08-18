@@ -6,7 +6,7 @@ One rule: **the balance can never fall below zero.** If a debit would overdraw t
 
 ## Easy developer setup
 
-To run the API and web app side by side on your local:
+To run the API and web app side by side on your local `CD` into the root project:
 
 ```bash
 npm install
