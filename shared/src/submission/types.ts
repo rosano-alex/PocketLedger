@@ -1,5 +1,5 @@
 import type { Instance } from '@codigos/typed-fsm';
-import type { LedgerError } from '@pocketledger/shared';
+import type { LedgerError } from '../errors';
 
 // A submit can succeed, be refused, or fail, and flags for that allow
 // imposible combinations. Double-submit is structural here: `SUBMIT` isn't

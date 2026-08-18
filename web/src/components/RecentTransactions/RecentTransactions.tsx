@@ -1,7 +1,7 @@
 import type { Transaction } from '@pocketledger/shared';
 import { Box, Text, VStack } from '@gluestack-ui/themed';
 import { steps } from '../../animation';
-import { figure, when } from '../../format';
+import { figure, when } from '@pocketledger/shared/format';
 import { Panel } from '../Panel';
 import { Cell } from './Cell';
 import { Row } from './Row';

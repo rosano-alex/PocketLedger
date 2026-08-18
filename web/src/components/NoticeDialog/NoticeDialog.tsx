@@ -10,7 +10,7 @@ import {
   Heading,
   Text,
 } from '@gluestack-ui/themed';
-import { useLedgerStore } from '../../store';
+import { useLedgerStore } from '@pocketledger/shared/store';
 import { backdropSx, contentSx } from './animation';
 import { toneStyle } from './tone';
 

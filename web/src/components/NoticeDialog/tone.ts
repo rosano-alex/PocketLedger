@@ -1,4 +1,4 @@
-import type { Notice } from '../../submission';
+import type { Notice } from '@pocketledger/shared/submission';
 
 interface ToneStyle {
   title: string;

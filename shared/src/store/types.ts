@@ -1,4 +1,4 @@
-import type { TransactionType } from '@pocketledger/shared';
+import type { TransactionType } from '../transaction';
 import type { Notice, SubmissionEvent, SubmissionState } from '../submission';
 
 export interface Draft {

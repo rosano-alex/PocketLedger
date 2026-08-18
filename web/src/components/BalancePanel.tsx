@@ -1,6 +1,6 @@
 import { HStack, Text } from '@gluestack-ui/themed';
 import { steps } from '../animation';
-import { moneyParts } from '../format';
+import { moneyParts } from '@pocketledger/shared/format';
 import { Panel } from './Panel';
 
 // The headline. The dollars carry the page's only serif at the page's largest
