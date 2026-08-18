@@ -6,5 +6,8 @@
     // used purely as a type checker here.
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "../shared/src/**/*.ts"]
+  // A single `*`, so only the wire contract at the top of shared/src is seen.
+  // The folders below it are client logic — React, zustand, the DOM — and
+  // the server neither imports nor can type-check them.
+  "include": ["src/**/*.ts", "tests/**/*.ts", "../shared/src/*.ts"]
 }
