@@ -3,16 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "The wire contract shared by the PocketLedger API and web UI, and the UI logic that does not depend on the DOM.",
+  "description": "Everything the PocketLedger API, web app and mobile app have in common: the wire contract, plus the platform-agnostic UI logic the two clients both run.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./animation": "./src/animation/index.ts",
     "./api": "./src/api/index.ts",
     "./form": "./src/form/index.ts",
     "./format": "./src/format/index.ts",
     "./store": "./src/store/index.ts",
-    "./submission": "./src/submission/index.ts"
+    "./submission": "./src/submission/index.ts",
+    "./theme": "./src/theme/index.ts"
   },
   "dependencies": {
     "@codigos/typed-fsm": "github:rosano-alex/typed-fsm",

@@ -1,6 +1,6 @@
 import { config as base } from '@gluestack-ui/config';
 import { createConfig } from '@gluestack-style/react';
-import { onFill, palette, shades, veils } from './palette';
+import { onFill, palette, shades, veils } from '@pocketledger/shared/theme';
 
 export const theme = createConfig({
   ...base,
