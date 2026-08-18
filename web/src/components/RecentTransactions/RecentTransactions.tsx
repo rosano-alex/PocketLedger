@@ -15,9 +15,8 @@ interface RecentTransactionsProps {
 
 const TITLE = 'Last 5 transactions';
 
-// Stacks, not a `<table>`; gluestack rendres React Native views.
+// Stacks, not a `<table>`; gluestack renders React Native views.
 export function RecentTransactions({ transactions, error }: RecentTransactionsProps) {
-
   if (error) {
     return (
       <Panel title={TITLE} step={steps.recent}>

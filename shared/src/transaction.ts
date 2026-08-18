@@ -10,7 +10,7 @@ export interface Transaction {
 }
 
 // The server sets id, timestamp and balanceAfter, so a request carries only these.
-export interface TransactionInput {
+export interface UserInput {
   amount: number;
   type: TransactionType;
   description: string;

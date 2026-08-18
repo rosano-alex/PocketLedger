@@ -10,10 +10,9 @@ export async function request<T>(path: string, init?: RequestInit): Promise<ApiR
     throw new Error("Can't reach the server.");
   });
 
-
   const body = (await response.json()) as ApiResponse<T>;
 
-  // A 500 is the server failng; a refusal comes back as 200 with ok: false.
+  // A 500 is the server failing; a refusal comes back as 200 with ok: false.
   if (response.status >= 500) {
     throw new Error(body.ok ? 'Something went wrong.' : body.error.message);
   }

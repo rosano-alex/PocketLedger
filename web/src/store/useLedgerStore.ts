@@ -4,7 +4,6 @@ import { emptyDraft } from './draft';
 import type { LedgerUiState } from './types';
 
 export const useLedgerStore = create<LedgerUiState>()((set, get) => {
-
   const machine = createSubmissionMachine({
     onTransition: (_from, to) => set({ status: to }),
     onNotice: (notice) => set({ notice }),
@@ -17,9 +16,8 @@ export const useLedgerStore = create<LedgerUiState>()((set, get) => {
     notice: null,
 
     setField: (field, value) => {
-
       set((state) => ({ draft: { ...state.draft, [field]: value } }));
-      // Clears a stail refusal once the user starts correcting it.
+      // Clears a stale refusal once the user starts correcting it.
       get().dispatch({ type: 'EDIT' });
     },
 

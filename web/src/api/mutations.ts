@@ -1,4 +1,4 @@
-import type { PostResult, TransactionInput } from '@pocketledger/shared';
+import type { PostResult, UserInput } from '@pocketledger/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLedgerStore } from '../store';
 import { request } from './client';
@@ -10,7 +10,7 @@ export function usePostTransaction() {
   const dispatch = useLedgerStore((state) => state.dispatch);
 
   return useMutation({
-    mutationFn: (input: TransactionInput) =>
+    mutationFn: (input: UserInput) =>
       request<PostResult>('/transactions', { method: 'POST', body: JSON.stringify(input) }),
 
     onSuccess: async (res) => {

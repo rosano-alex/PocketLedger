@@ -1,10 +1,8 @@
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 
-
-import { createRoot } from 'react-dom/client'
-//
 import App from './App';
 import { theme } from './theme';
 // styles.css paints the dark page ground. Without it body keeps the UA default,
@@ -13,7 +11,6 @@ import { theme } from './theme';
 import './styles.css';
 import './fonts.css';
 import './animation/fade.css';
-
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 10_000, retry: 1 }, mutations: { retry: false } },

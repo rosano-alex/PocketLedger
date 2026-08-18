@@ -7,9 +7,7 @@ export function useAccount() {
   return useQuery({ queryKey: keys.account, queryFn: () => read<Account>('/account') });
 }
 
-
 export function useRecentTransactions() {
-
   return useQuery({
     queryKey: keys.transactions,
     queryFn: () => read<RecentResult>('/transactions'),
