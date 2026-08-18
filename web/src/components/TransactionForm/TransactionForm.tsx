@@ -6,7 +6,7 @@ import { Panel } from '../Panel';
 import { SubmitButton } from './SubmitButton';
 import { TextField } from './TextField';
 import { TypeOption } from './TypeOption';
-import { useSubmit } from './useSubmit';
+import { useSubmit } from '@pocketledger/shared/form';
 
 export function TransactionForm() {
   const draft = useLedgerStore((state) => state.draft);

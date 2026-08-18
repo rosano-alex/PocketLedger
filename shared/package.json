@@ -9,6 +9,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./api": "./src/api/index.ts",
+    "./form": "./src/form/index.ts",
     "./format": "./src/format/index.ts",
     "./store": "./src/store/index.ts",
     "./submission": "./src/submission/index.ts"

@@ -1,5 +1,5 @@
-import { usePostTransaction } from '@pocketledger/shared/api';
-import { useLedgerStore } from '@pocketledger/shared/store';
+import { usePostTransaction } from '../api';
+import { useLedgerStore } from '../store';
 
 /*
  * The form's decision-making, kept out of its markup: what the amount parses
