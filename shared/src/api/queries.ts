@@ -1,4 +1,5 @@
-import type { Account, RecentResult } from '@pocketledger/shared';
+import type { Account } from '../account';
+import type { RecentResult } from '../responses';
 import { useQuery } from '@tanstack/react-query';
 import { read } from './client';
 import { keys } from './keys';

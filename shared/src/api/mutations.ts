@@ -1,6 +1,7 @@
-import type { PostResult, TransactionInput } from '@pocketledger/shared';
+import type { PostResult } from '../responses';
+import type { TransactionInput } from '../transaction';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLedgerStore } from '@pocketledger/shared/store';
+import { useLedgerStore } from '../store';
 import { request } from './client';
 import { keys } from './keys';
 

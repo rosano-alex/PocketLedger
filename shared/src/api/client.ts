@@ -1,9 +1,10 @@
-import type { ApiResponse } from '@pocketledger/shared';
+import type { ApiResponse } from '../responses';
+import { apiUrl } from './config';
 
 // Resolves to the envelope, not to "success" — a refusal is a real answer and
 // the caller decides what to do with it.
 export async function request<T>(path: string, init?: RequestInit): Promise<ApiResponse<T>> {
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(apiUrl(path), {
     headers: { 'Content-Type': 'application/json' },
     ...init,
   }).catch(() => {

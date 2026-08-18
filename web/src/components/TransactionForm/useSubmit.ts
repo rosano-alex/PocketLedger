@@ -1,4 +1,4 @@
-import { usePostTransaction } from '../../api';
+import { usePostTransaction } from '@pocketledger/shared/api';
 import { useLedgerStore } from '@pocketledger/shared/store';
 
 /*

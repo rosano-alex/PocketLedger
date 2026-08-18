@@ -8,12 +8,17 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./api": "./src/api/index.ts",
     "./format": "./src/format/index.ts",
     "./store": "./src/store/index.ts",
     "./submission": "./src/submission/index.ts"
   },
   "dependencies": {
     "@codigos/typed-fsm": "github:rosano-alex/typed-fsm",
+    "@tanstack/react-query": "^5.64.1",
     "zustand": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": ">=18"
   }
 }
