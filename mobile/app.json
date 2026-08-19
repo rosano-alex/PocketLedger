@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "PocketLedger",
+    "slug": "pocketledger",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "pocketledger",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pocketledger.app"
+    },
+    "android": {
+      "package": "com.pocketledger.app",
+      "edgeToEdgeEnabled": true
+    },
+    "plugins": [
+      "expo-status-bar",
+      "expo-font"
+    ]
+  }
+}
