@@ -1,4 +1,5 @@
 import type { Transaction } from '@pocketledger/shared';
+import { useMemo } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { figure, when } from '@pocketledger/shared/format';
 import { useFadeIn } from '../../animation';
@@ -10,6 +11,12 @@ import { TypeBadge } from './TypeBadge';
 export function Row({ transaction, step, last }: { transaction: Transaction; step: number; last: boolean }) {
   const fade = useFadeIn(step);
 
+  // Every refetch replaces these objects, so the whole list re-renders whenever
+  // a transaction is posted or the screen is pulled. 
+  const stamp = useMemo(() => when(transaction.timestamp), [transaction.timestamp]);
+  const amount = useMemo(() => figure(transaction.amount), [transaction.amount]);
+  const balance = useMemo(() => figure(transaction.balanceAfter), [transaction.balanceAfter]);
+
   return (
     <Animated.View style={[styles.row, last && styles.last, fade]}>
       <View style={styles.line}>
@@ -17,16 +24,16 @@ export function Row({ transaction, step, last }: { transaction: Transaction; ste
           {transaction.description}
         </Text>
         {/* Unsigned; the badge below carries the direction. */}
-        <Text style={styles.amount}>{figure(transaction.amount)}</Text>
+        <Text style={styles.amount}>{amount}</Text>
       </View>
 
       <View style={[styles.line, styles.underline]}>
         <View style={styles.meta}>
           <TypeBadge type={transaction.type} />
-          <Text style={styles.when}>{when(transaction.timestamp)}</Text>
+          <Text style={styles.when}>{stamp}</Text>
         </View>
 
-        <Text style={styles.balance}>{figure(transaction.balanceAfter)}</Text>
+        <Text style={styles.balance}>{balance}</Text>
       </View>
     </Animated.View>
   );
