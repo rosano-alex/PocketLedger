@@ -9,10 +9,16 @@ One rule: **the balance can never fall below zero.** If a debit would overdraw t
 
 ## Easy developer setup
 
-To run the API and web app side by side on your local `CD` into the root project:
+To run the API and web app side by side on your local `cd` into the root project:
 
 ```bash
+# Change directories into the project
+cd ~/{projects}/PocketLedger
+
+# Install all dependendencies
 npm install
+
+# Run web and server concurrently
 npm run dev
 ```
 
