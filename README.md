@@ -60,16 +60,7 @@ npm run ios      # or: npm run android
 ```
 
 The app finds the API by itself: it takes the host Expo served the bundle from
-and talks to port 4400 there, so a phone on the same network needs no address
-configured by hand.
-
-`mobile/` is deliberately **not** an npm workspace. React Native and
-`react-native-web` both answer to the name `react-native`, and hoisting the
-native package into the root `node_modules` puts it in reach of the web build's
-resolver. Keeping the app's dependencies to itself means the web bundle cannot
-change because of something mobile installed. `mobile/metro.config.js` bridges
-the gap: it watches `shared/` and pins resolution to `mobile/node_modules`, so
-React stays a single copy.
+and talks to port 4400 there.
 
 
 ## Shared code
