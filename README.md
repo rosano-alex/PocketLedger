@@ -3,6 +3,9 @@
 PocketLedger is a simple, single-account ledger built to make money tracking dependable and easy. It includes an Express + TypeScript API, a React + TypeScript web app, and JSON-based transaction storage.
 
 One rule: **the balance can never fall below zero.** If a debit would overdraw the account, PocketLedger declines it.
+<br>
+### App Screenshot:
+![Main App](img/screen.png)
 
 ## Easy developer setup
 
@@ -77,7 +80,7 @@ State machines are managed with [typed-fsm](https://github.com/rosano-alex/typed
 **An unreadable ledger stops the server.** A missing file is treated as a new account; any other read error prevents startup, protecting existing transaction data from being overwritten.
 
 Transactions live in `server/data/transactions.json`. The file is created on the first write and ignored by Git. Set `LEDGER_FILE` to use a different location.
-<br><br><br>
+<br><br>
 ### Front end data flow:
 ![Front Ent arch](img/web.png)
 
