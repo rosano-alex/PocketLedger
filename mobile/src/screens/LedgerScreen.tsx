@@ -1,5 +1,5 @@
 import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAccount, useRecentTransactions } from '@pocketledger/shared/api';
 import {
   BalancePanel,
@@ -24,32 +24,37 @@ export function LedgerScreen() {
 
   return (
     <Ground>
-      <KeyboardAvoidingView
-        style={styles.fill}
-        // Android already resizes the window; on iOS the keyboard would sit
-        // over the description field.
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
+      {/*
+        The top inset belongs to the viewport, not to the scrolling content:
+        padding inside the ScrollView only places the *first* screenful clear of
+        the notch, and everything after it slides up under the clock. Insetting
+        the frame means the list scrolls beneath nothing.
+      */}
+      <SafeAreaView style={styles.fill} edges={['top']}>
+        <KeyboardAvoidingView
           style={styles.fill}
-          contentContainerStyle={[
-            styles.content,
-            { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 28 },
-          ]}
-          // So tapping Post while the keyboard is up presses the button rather
-          // than just dismissing the keyboard.
-          keyboardShouldPersistTaps="handled"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.textMuted} />
-          }
+          // Android already resizes the window; on iOS the keyboard would sit
+          // over the description field.
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <Masthead />
-          <TransactionForm />
-          <BalancePanel balance={account.data?.balance ?? 0} />
-          <RecentTransactions transactions={recent.data?.transactions} error={recent.error} />
-          <Footer />
-        </ScrollView>
-      </KeyboardAvoidingView>
+          <ScrollView
+            style={styles.fill}
+            contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 28 }]}
+            // So tapping Post while the keyboard is up presses the button rather
+            // than just dismissing the keyboard.
+            keyboardShouldPersistTaps="handled"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.textMuted} />
+            }
+          >
+            <Masthead />
+            <TransactionForm />
+            <BalancePanel balance={account.data?.balance ?? 0} />
+            <RecentTransactions transactions={recent.data?.transactions} error={recent.error} />
+            <Footer />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
 
       <NoticeDialog />
     </Ground>
@@ -62,6 +67,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
+    paddingTop: 16,
     gap: 18,
   },
 });
