@@ -3,10 +3,12 @@
    a bolder cut, which smears the brush edges.
 
    `color` and a quoted `font-style` were in here before; neither is a
-   @font-face descriptor, so both were dropped by the parser. */
+   @font-face descriptor, so both were dropped by the parser.
+
+   The file lives in shared/ because the mobile masthead is set in it too. */
 @font-face {
   font-family: 'Ink Brush Arabic';
-  src: url('fonts/InkBrushArabic_DEMO-Textured.otf') format('opentype');
+  src: url('../../shared/assets/fonts/InkBrushArabic_DEMO-Textured.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

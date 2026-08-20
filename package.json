@@ -3,20 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "PocketLedger: a single-account accounting system. Express + TypeScript API, React + TypeScript UI.",
+  "description": "PocketLedger: a single-account accounting system. Express + TypeScript API, React + TypeScript web UI, and an Expo React Native mobile app, over shared logic.",
   "workspaces": [
     "shared",
     "server",
     "web"
   ],
   "scripts": {
+    "android": "npm --prefix mobile run android",
+    "build": "npm run build --workspace server && npm run build --workspace web",
     "dev": "concurrently -n api,web -c green,magenta --kill-others-on-fail \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm run dev --workspace server",
+    "dev:mobile": "npm --prefix mobile run start",
     "dev:web": "npm run dev --workspace web",
-    "build": "npm run build --workspace server && npm run build --workspace web",
+    "install:mobile": "npm --prefix mobile install",
+    "ios": "npm --prefix mobile run ios",
     "start": "npm run start --workspace server",
-    "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace web",
-    "test": "npm run test --workspace server && npm run test --workspace web"
+    "test": "npm run test --workspace server && npm run test --workspace web",
+    "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace web && npm --prefix mobile run typecheck"
   },
   "devDependencies": {
     "concurrently": "^9.2.4",

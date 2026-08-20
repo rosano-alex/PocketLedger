@@ -1,12 +1,12 @@
 import { HStack, VStack } from '@gluestack-ui/themed';
 import { steps } from '../../animation';
-import { cleanAmount } from '../../format';
-import { useLedgerStore } from '../../store';
+import { cleanAmount } from '@pocketledger/shared/format';
+import { useLedgerStore } from '@pocketledger/shared/store';
 import { Panel } from '../Panel';
 import { SubmitButton } from './SubmitButton';
 import { TextField } from './TextField';
 import { TypeOption } from './TypeOption';
-import { useSubmit } from './useSubmit';
+import { useSubmit } from '@pocketledger/shared/form';
 
 export function TransactionForm() {
   const draft = useLedgerStore((state) => state.draft);

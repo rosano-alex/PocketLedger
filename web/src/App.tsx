@@ -1,5 +1,5 @@
 import { Box, HStack, VStack } from '@gluestack-ui/themed';
-import { useAccount, useRecentTransactions } from './api';
+import { useAccount, useRecentTransactions } from '@pocketledger/shared/api';
 import {
   BalancePanel,
   Container,

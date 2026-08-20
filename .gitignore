@@ -8,3 +8,7 @@ dist/
 # Runtime ledger data; the app recreates this on first write.
 server/data/transactions.json
 server/data/*.tmp
+
+# Expo's local build cache.
+.expo/
+mobile/.expo/

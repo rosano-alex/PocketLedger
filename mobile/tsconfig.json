@@ -1,0 +1,19 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    // The same strictness the rest of the repo is held to; expo's base is
+    // looser than tsconfig.base.json and this app compiles shared's sources.
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
+  },
+  "include": ["index.ts", "App.tsx", "src/**/*.ts", "src/**/*.tsx", "../shared/src/**/*.ts"],
+  // The shared logic tests are run by web's Jest, which supplies the globals
+  // for them. This app compiles the code under test, not the tests.
+  "exclude": ["node_modules", "../shared/src/**/*.test.ts"]
+}

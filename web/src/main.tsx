@@ -1,5 +1,6 @@
 import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { createQueryClient } from '@pocketledger/shared/api';
 import { StrictMode } from 'react';
 
 
@@ -15,9 +16,7 @@ import './fonts.css';
 import './animation/fade.css';
 
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 10_000, retry: 1 }, mutations: { retry: false } },
-});
+const queryClient = createQueryClient();
 
 const container = document.getElementById('root');
 if (!container) throw new Error('No #root element.');

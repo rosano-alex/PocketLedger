@@ -1,6 +1,6 @@
 # PocketLedger
 
-PocketLedger is a simple, single-account ledger built to make money tracking dependable and easy. It includes an Express + TypeScript API, a React + TypeScript web app, and JSON-based transaction storage.
+PocketLedger is a simple, single-account ledger built to make money tracking dependable and easy. It includes an Express + TypeScript API, a React + TypeScript web app, an Expo React Native mobile app, and JSON-based transaction storage.
 
 One rule: **the balance can never fall below zero.** If a debit would overdraw the account, PocketLedger declines it.
 <br>
@@ -31,8 +31,70 @@ To run the test suite:
 npm test
 ```
 
+To type-check every side of the project — server, web and mobile:
+
+```bash
+npm run typecheck
+```
+
 
 Each folder contains small, focused modules exported through an index.ts barrel file. This lets imports target the folder instead of individual files, a pattern inspired by **Angular** and **React library development.**
+
+
+## Mobile
+
+The mobile app is Expo + React Native, in `mobile/`. It runs the same logic the
+web app does — see [Shared code](#shared-code).
+
+![Mobile App](img/phone.png)
+
+```bash
+# Once, to install the app's dependencies
+npm run install:mobile
+
+# The app needs the API, so start that first (in its own terminal)
+npm run dev:api
+
+# Then the bundler, and open it on a simulator
+npm run ios      # or: npm run android
+```
+
+The app finds the API by itself: it takes the host Expo served the bundle from
+and talks to port 4400 there, so a phone on the same network needs no address
+configured by hand.
+
+`mobile/` is deliberately **not** an npm workspace. React Native and
+`react-native-web` both answer to the name `react-native`, and hoisting the
+native package into the root `node_modules` puts it in reach of the web build's
+resolver. Keeping the app's dependencies to itself means the web bundle cannot
+change because of something mobile installed. `mobile/metro.config.js` bridges
+the gap: it watches `shared/` and pins resolution to `mobile/node_modules`, so
+React stays a single copy.
+
+
+## Shared code
+
+`shared/` holds everything the three sides have in common. The root export is
+the wire contract, which is all the server sees; the rest is client logic that
+the web and mobile apps both run:
+
+| Import | What it is |
+| --- | --- |
+| `@pocketledger/shared` | The wire contract — transactions, accounts, errors, envelopes |
+| `@pocketledger/shared/api` | The fetch client, the React Query hooks and cache keys |
+| `@pocketledger/shared/store` | The zustand store holding the draft transaction |
+| `@pocketledger/shared/submission` | The submit state machine — idle, submitting, accepted, refused, failed |
+| `@pocketledger/shared/form` | `useSubmit`: what the amount parses to, whether the button is live |
+| `@pocketledger/shared/format` | Money, figures, dates |
+| `@pocketledger/shared/theme` | The five colours the whole product is drawn from |
+| `@pocketledger/shared/animation` | The entrance order and its ladder of delays |
+
+What is *not* shared is presentation. The web app is gluestack-ui over
+`react-native-web`, leaning on real CSS for its frosted panels and hover states;
+the mobile app is plain React Native primitives. Both read their colours from
+`shared/src/theme/palette.ts`, so the product repaints from one file.
+
+The masthead face in `shared/assets/fonts/` is likewise used by both.
 
 
 ## API

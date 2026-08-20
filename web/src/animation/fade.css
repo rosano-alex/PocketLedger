@@ -24,8 +24,9 @@
   animation: fade-in var(--fade-duration) var(--fade-ease) both;
 }
 
-/* The stagger ladder. Panels are 70ms apart so each is distinctly its own
-   beat; table rows are 45ms apart so they read as one sweep, not a queue. */
+/* The stagger ladder, spelled out for CSS. The numbers are
+   shared/src/animation/delay.ts — mobile computes them, and any change to
+   the ladder belongs there first. */
 [data-fade-step='0'] {
   animation-delay: 0ms;
 }
